@@ -82,25 +82,34 @@
           const username = document.getElementById("username").value.trim();
           const password = document.getElementById("password").value.trim();
 
-          // Get users from localStorage
+          // Fetch users from localStorage
           const users = JSON.parse(localStorage.getItem("users")) || [];
 
-          // Check if user exists and is Admin or Staff
+          // Find user
           const user = users.find(
-            (u) =>
-              u.username === username &&
-              u.password === password &&
-              (u.role === "Admin" || u.role === "Staff")
+            (u) => u.username === username && u.password === password
           );
 
-          if (user) {
-            // Save logged in user in sessionStorage
-            sessionStorage.setItem("adminUser", JSON.stringify(user));
-
-            // Redirect to admin dashboard
-            window.location.href = "admin-calendar.html";
-          } else {
+          if (!user) {
             alert("Invalid username or password. Please try again.");
+            return;
+          }
+
+          if (user.role !== "Admin" && user.role !== "Staff") {
+            alert(
+              "Access denied. Only Admin or Staff accounts can log in here."
+            );
+            return;
+          }
+
+          // Save logged-in user
+          sessionStorage.setItem("adminUser", JSON.stringify(user));
+
+          // Redirect based on role
+          if (user.role === "Admin") {
+            window.location.href = "admin-dashboard.html";
+          } else if (user.role === "Staff") {
+            window.location.href = "staff-dashboard.html";
           }
         });
     </script>
