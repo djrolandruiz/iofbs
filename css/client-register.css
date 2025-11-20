@@ -1,0 +1,78 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+.clientRegisterPage .container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.clientRegisterForm {
+  border: 1px solid #2aa63e;
+  border-radius: 10px;
+  box-shadow: 0 5px 10px 0 #b9f8cf;
+  padding: 20px;
+}
+
+.clientRegisterForm h3,
+h6 {
+  text-align: center;
+}
+
+.clientRegisterForm h6 {
+  font-size: 14px;
+  color: #2aa63e;
+}
+
+.line {
+  border: 1px solid #b9f8cf;
+}
+
+.clientRegisterForm input {
+  padding: 10px;
+  border: 1px solid #2aa63e;
+  width: 100%;
+}
+
+.clientRegisterForm input::placeholder {
+  color: #999;
+}
+
+.passwordInput,
+.confirmPasswordInput {
+  display: inline-block;
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.clientRegisterBtn,
+.cancelBtn {
+  display: inline-block;
+}
+
+.clientRegisterBtn button,
+.cancelBtn button {
+  padding: 10px;
+  width: 100px;
+  margin-left: 10px;
+}
+
+.clientLoginLink {
+  text-align: center;
+}
+
+.clientLoginLink a {
+  text-decoration: none;
+  font-weight: 500;
+}

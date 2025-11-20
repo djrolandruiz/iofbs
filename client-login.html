@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Client Login</title>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./css/client-login.css" />
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <!-- Client Login Page -->
+    <div class="clientLoginPage">
+      <div class="container">
+        <!-- Client Login Form -->
+        <div class="clientLoginForm">
+          <form action="">
+            <h3>Client Login</h3>
+            <h1 class="line"></h1>
+            <h6 class="mb-3">Pasig City Maybunga Rainforest Park IOFBS</h6>
+            <!-- Username Input -->
+            <label for="">Username</label>
+            <input
+              type="text"
+              class="form-control mb-3"
+              name="username"
+              id="username"
+              placeholder="Enter your username"
+              autocomplete="off"
+              required
+            />
+            <!-- Password Input -->
+            <label for="">Password</label>
+            <input
+              type="password"
+              class="form-control mb-3"
+              name="password"
+              id="password"
+              placeholder="Enter your password"
+              required
+            />
+            <!-- Login Button -->
+            <div class="clientLoginBtn">
+              <button class="btn btn-primary mb-3">Login</button>
+            </div>
+            <!-- Client Create Account Link -->
+            <div class="clientCreateAccount">
+              <p>
+                Don't have an account yet?
+                <a href="client-register.html">Register here</a>
+              </p>
+            </div>
+            <!-- Login as Admin Link -->
+            <div class="adminLoginLink mb-3">
+              <p>Login as <a href="index.html">Administrator</a></p>
+            </div>
+            <!-- Forogt Password Link -->
+            <div class="forgotPasswordLink">
+              <p>
+                Forgot Password?
+                <a href="client-reset-password.html">Reset here</a>
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const loginForm = document.querySelector("form");
+
+        loginForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const username = document.getElementById("username").value.trim();
+          const password = document.getElementById("password").value.trim();
+
+          const users = JSON.parse(localStorage.getItem("clients")) || [];
+
+          const user = users.find(
+            (u) => u.username === username && u.password === password
+          );
+
+          if (user) {
+            // Save logged-in user
+            localStorage.setItem("currentClient", JSON.stringify(user));
+            alert("Login successful!");
+            window.location.href = "client-calendar.html"; // Redirect to client dashboard
+          } else {
+            alert("Invalid username or password!");
+          }
+        });
+      });
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

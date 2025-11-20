@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login</title>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./css/index.css" />
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!-- Admin/Staff Login Page -->
+    <div class="adminLoginPage">
+      <div class="container">
+        <!-- Admin Login Form -->
+        <div class="adminLoginForm">
+          <form id="adminLoginForm">
+            <h3>Admin/Staff Login</h3>
+            <h1 class="line"></h1>
+            <h6 class="mb-3">Pasig City Maybunga Rainforest Park IOFBS</h6>
+
+            <!-- Username Input -->
+            <label for="">Username</label>
+            <input
+              type="text"
+              class="form-control mb-3"
+              name="username"
+              id="username"
+              placeholder="Enter your username"
+              autocomplete="off"
+              required
+            />
+
+            <!-- Password Input -->
+            <label for="">Password</label>
+            <input
+              type="password"
+              class="form-control mb-3"
+              name="password"
+              id="password"
+              placeholder="Enter your password"
+              required
+            />
+
+            <!-- Login Button -->
+            <div class="adminLoginBtn">
+              <button type="submit" class="btn btn-primary mb-3">Login</button>
+            </div>
+
+            <!-- Login as Client Link -->
+            <div class="clientLoginLink mb-3">
+              <p>Login as <a href="client-login.html">Client</a></p>
+            </div>
+
+            <!-- Forgot Password Link -->
+            <div class="forgotPasswordLink">
+              <p>
+                Forgot Password? Contact your
+                <a href="#">System Administrator</a>
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Login Script -->
+    <script>
+      document
+        .getElementById("adminLoginForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const username = document.getElementById("username").value.trim();
+          const password = document.getElementById("password").value.trim();
+
+          // Get users from localStorage
+          const users = JSON.parse(localStorage.getItem("users")) || [];
+
+          // Check if user exists and is Admin or Staff
+          const user = users.find(
+            (u) =>
+              u.username === username &&
+              u.password === password &&
+              (u.role === "Admin" || u.role === "Staff")
+          );
+
+          if (user) {
+            // Save logged in user in sessionStorage
+            sessionStorage.setItem("adminUser", JSON.stringify(user));
+
+            // Redirect to admin dashboard
+            window.location.href = "admin-calendar.html";
+          } else {
+            alert("Invalid username or password. Please try again.");
+          }
+        });
+    </script>
+  </body>
+</html>

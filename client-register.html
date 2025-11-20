@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Client Account Registration</title>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./css/client-register.css" />
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <!-- Client Registration Page -->
+    <div class="clientRegisterPage">
+      <div class="container">
+        <!-- Client Account Registration Form -->
+        <div class="clientRegisterForm">
+          <form action="">
+            <h3>Client Registration Form</h3>
+            <h1 class="line"></h1>
+            <h6 class="mb-3">Pasig City Maybunga Rainforest Park IOFBS</h6>
+            <!-- Fullname Input -->
+            <label for="">Fullname</label>
+            <input
+              type="text"
+              class="form-control mb-3"
+              name="fullname"
+              id="fullname"
+              placeholder="Enter your fullname"
+              autocomplete="off"
+              required
+            />
+            <!-- Email Input -->
+            <label for="">Email</label>
+            <input
+              type="email"
+              class="form-control mb-3"
+              name="email"
+              id="email"
+              placeholder="Enter your email address"
+              autocomplete="off"
+              required
+            />
+            <!-- Mobile number input -->
+            <label for="">Mobile Number</label>
+            <input
+              type="text"
+              class="form-control mb-3"
+              name="mobile"
+              id="mobile"
+              placeholder="Enter your mobile number"
+              autocomplete="off"
+              required
+            />
+            <!-- Username input -->
+            <label for="">Username</label>
+            <input
+              type="text"
+              class="form-control mb-3"
+              name="username"
+              id="username"
+              placeholder="Assign username"
+              autocomplete="off"
+              required
+            />
+            <!-- Password input -->
+            <div class="passwordInput">
+              <label for="">Password</label>
+              <input
+                type="password"
+                class="form-control mb-3"
+                name="password"
+                id="password"
+                placeholder="Assign password"
+                required
+              />
+            </div>
+            <!-- Confirm Password Input -->
+            <div class="confirmPasswordInput">
+              <label for="">Confirm Password</label>
+              <input
+                type="password"
+                class="form-control mb-3"
+                name="confirmPassword"
+                id="confirmPassword"
+                placeholder="Re-enter assign password"
+                required
+              />
+            </div>
+            <!-- Register Button -->
+            <div class="buttons">
+              <div class="clientRegisterBtn">
+                <button class="btn btn-success">Register</button>
+              </div>
+              <!-- Cancel Button -->
+              <div class="cancelBtn mb-3">
+                <button
+                  class="btn btn-secondary"
+                  onclick="window.location.href='client-login.html';"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+            <!-- Client Login Link -->
+            <div class="clientLoginLink">
+              <p>
+                Already have an account?
+                <a href="client-login.html">Login here</a>
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const registerForm = document.querySelector("form");
+
+        registerForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const fullname = document.getElementById("fullname").value.trim();
+          const email = document.getElementById("email").value.trim();
+          const mobile = document.getElementById("mobile").value.trim();
+          const username = document.getElementById("username").value.trim();
+          const password = document.getElementById("password").value.trim();
+          const confirmPassword = document
+            .getElementById("confirmPassword")
+            .value.trim();
+
+          if (password !== confirmPassword) {
+            alert("Passwords do not match!");
+            return;
+          }
+
+          // Get existing users or empty array
+          let users = JSON.parse(localStorage.getItem("clients")) || [];
+
+          // Check if username already exists
+          if (users.some((user) => user.username === username)) {
+            alert("Username already exists. Please choose another.");
+            return;
+          }
+
+          // Save user
+          const newUser = { fullname, email, mobile, username, password };
+          users.push(newUser);
+          localStorage.setItem("clients", JSON.stringify(users));
+
+          alert("Account registered successfully!");
+          window.location.href = "client-login.html";
+        });
+      });
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

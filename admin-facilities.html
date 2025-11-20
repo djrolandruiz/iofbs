@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Facilities | IOFBS</title>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <!-- Custom CSS -->
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        display: flex;
+        background: #f4f6f8;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 240px;
+        height: 100vh;
+        background: #198754;
+        color: #fff;
+        position: fixed;
+        top: 0;
+        left: 0;
+        padding: 20px 0;
+      }
+
+      .sidebar .logo h2 {
+        text-align: center;
+        font-size: 18px;
+        margin-bottom: 30px;
+      }
+
+      .sidebar .menu {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      .sidebar .menu li {
+        margin: 15px 0;
+      }
+
+      .sidebar .menu li a {
+        color: #fff;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 12px 20px;
+        border-radius: 5px;
+        transition: 0.3s;
+      }
+
+      .sidebar .menu li a:hover,
+      .sidebar .menu li a.active {
+        background: #145c32;
+      }
+
+      /* Main Content */
+      .main-content {
+        margin-left: 240px;
+        padding: 20px;
+        width: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="logo">
+        <h2>Admin Dashboard</h2>
+      </div>
+      <ul class="menu">
+        <li>
+          <a href="admin-dashboard.html"
+            ><i class="fas fa-chart-line"></i><span>Dashboard</span></a
+          >
+        </li>
+        <li>
+          <a href="admin-calendar.html"
+            ><i class="fas fa-calendar"></i><span>Calendar</span></a
+          >
+        </li>
+        <li>
+          <a href="admin-bookings.html"
+            ><i class="fas fa-calendar-check"></i><span>Bookings</span></a
+          >
+        </li>
+        <li>
+          <a href="admin-payment.html"
+            ><i class="fas fa-coins"></i><span>Payments</span></a
+          >
+        </li>
+        <li>
+          <a href="admin-facilities.html" class="active"
+            ><i class="fas fa-building"></i><span>Facilities</span></a
+          >
+        </li>
+        <li>
+          <a href="admin-users.html"
+            ><i class="fas fa-users"></i><span>Users</span></a
+          >
+        </li>
+        <li>
+          <a href="#" onclick="confirmLogout(event)"
+            ><i class="fas fa-power-off"></i><span>Logout</span></a
+          >
+        </li>
+      </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <h2 class="mb-4">Manage Facilities</h2>
+
+      <!-- Add Facility Button -->
+      <button class="btn btn-success mb-3" onclick="openFacilityModal()">
+        Add Facility
+      </button>
+
+      <!-- Facilities Table -->
+      <div class="table-responsive">
+        <table
+          class="table table-striped align-middle text-center"
+          id="facilitiesTable"
+        >
+          <thead class="table-dark">
+            <tr>
+              <th>#</th>
+              <th>Facility Name</th>
+              <th>Description</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Facility Modal -->
+    <div class="modal fade" id="facilityModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="facilityModalTitle">Add Facility</h5>
+            <button class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <form id="facilityForm">
+            <div class="modal-body">
+              <div class="mb-3">
+                <label class="form-label">Facility Name</label>
+                <input
+                  type="text"
+                  name="facility_name"
+                  class="form-control"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea
+                  name="facility_desc"
+                  class="form-control"
+                  rows="3"
+                ></textarea>
+              </div>
+              <input type="hidden" id="facilityIndex" />
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" data-bs-dismiss="modal">
+                Cancel
+              </button>
+              <button type="submit" class="btn btn-success">
+                Save Facility
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      function confirmLogout(event) {
+        event.preventDefault();
+        if (confirm("Are you sure you want to logout?")) {
+          window.location.href = "index.html"; // replace with actual logout page
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        let facilities = JSON.parse(localStorage.getItem("facilities")) || [];
+        const tbody = document.querySelector("#facilitiesTable tbody");
+
+        function renderTable() {
+          tbody.innerHTML = "";
+          facilities.forEach((f, index) => {
+            tbody.innerHTML += `
+              <tr>
+                <td>${index + 1}</td>
+                <td>${f.name}</td>
+                <td>${f.desc || ""}</td>
+                <td>
+                  <button class="btn btn-sm btn-primary" onclick="editFacility(${index})"><i class="fas fa-edit"></i> Edit</button>
+                  <button class="btn btn-sm btn-danger" onclick="deleteFacility(${index})"><i class="fas fa-trash"></i> Delete</button>
+                </td>
+              </tr>
+            `;
+          });
+        }
+
+        window.openFacilityModal = function () {
+          document.getElementById("facilityModalTitle").innerText =
+            "Add Facility";
+          document.getElementById("facilityForm").reset();
+          document.getElementById("facilityIndex").value = "";
+          const modal = new bootstrap.Modal(
+            document.getElementById("facilityModal")
+          );
+          modal.show();
+        };
+
+        document
+          .getElementById("facilityForm")
+          .addEventListener("submit", function (e) {
+            e.preventDefault();
+            const name = this.facility_name.value.trim();
+            const desc = this.facility_desc.value.trim();
+            const index = document.getElementById("facilityIndex").value;
+
+            if (index === "") {
+              facilities.push({ name, desc });
+            } else {
+              facilities[index] = { name, desc };
+            }
+
+            localStorage.setItem("facilities", JSON.stringify(facilities));
+            renderTable();
+
+            const modal = bootstrap.Modal.getInstance(
+              document.getElementById("facilityModal")
+            );
+            modal.hide();
+          });
+
+        window.editFacility = function (index) {
+          const f = facilities[index];
+          document.getElementById("facilityModalTitle").innerText =
+            "Edit Facility";
+          document.facilityForm.facility_name.value = f.name;
+          document.facilityForm.facility_desc.value = f.desc;
+          document.getElementById("facilityIndex").value = index;
+          const modal = new bootstrap.Modal(
+            document.getElementById("facilityModal")
+          );
+          modal.show();
+        };
+
+        window.deleteFacility = function (index) {
+          if (confirm("Are you sure you want to delete this facility?")) {
+            facilities.splice(index, 1);
+            localStorage.setItem("facilities", JSON.stringify(facilities));
+            renderTable();
+          }
+        };
+
+        renderTable();
+      });
+    </script>
+  </body>
+</html>

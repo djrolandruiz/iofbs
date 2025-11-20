@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Client Bookings</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <!-- Custom CSS -->
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        display: flex;
+        background: #f4f6f8;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 240px;
+        height: 100vh;
+        background: #198754;
+        color: #fff;
+        position: fixed;
+        top: 0;
+        left: 0;
+        padding: 20px 0;
+      }
+
+      .sidebar .logo h2 {
+        text-align: center;
+        font-size: 18px;
+        margin-bottom: 30px;
+      }
+
+      .sidebar .menu {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      .sidebar .menu li {
+        margin: 15px 0;
+      }
+
+      .sidebar .menu li a {
+        color: #fff;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 12px 20px;
+        border-radius: 5px;
+        transition: 0.3s;
+      }
+
+      .sidebar .menu li a:hover,
+      .sidebar .menu li a.active {
+        background: #145c32;
+      }
+
+      /* Main Content */
+      .main-content {
+        margin-left: 240px;
+        padding: 20px;
+        width: 100%;
+      }
+
+      /* Calendar */
+      #calendar {
+        background: #fff;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body style="display: flex">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="logo">
+        <h2>Client Dashboard</h2>
+      </div>
+      <ul class="menu">
+        <li>
+          <a href="client-calendar.html"
+            ><i class="fas fa-calendar"></i><span>Calendar</span></a
+          >
+        </li>
+        <li>
+          <a href="client-bookings.html" class="active"
+            ><i class="fas fa-calendar-check"></i><span>Bookings</span></a
+          >
+        </li>
+        <li>
+          <a href="client-payment.html"
+            ><i class="fas fa-coins"></i><span>Payment</span></a
+          >
+        </li>
+        <li>
+          <a href="#" onclick="confirmLogout(event)">
+            <i class="fas fa-power-off"></i> <span>Logout</span>
+          </a>
+        </li>
+
+        <script>
+          function confirmLogout(event) {
+            event.preventDefault(); // Prevent the default link action
+            if (confirm("Are you sure you want to logout?")) {
+              // User confirmed, redirect to logout page
+              window.location.href = "index.html"; // Replace with your actual logout URL
+            }
+          }
+        </script>
+      </ul>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content p-4" style="width: 100%; margin-left: 240px">
+      <h2 class="mb-4">My Bookings</h2>
+
+      <!-- SEARCH BAR -->
+      <div class="input-group mb-3" style="max-width: 350px">
+        <input
+          type="text"
+          class="form-control"
+          id="searchBooking"
+          placeholder="Search bookings..."
+        />
+        <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+      </div>
+
+      <!-- BOOKINGS TABLE -->
+      <div class="table-responsive">
+        <table
+          class="table table-striped align-middle text-center"
+          id="bookingsTable"
+        >
+          <thead class="table-dark">
+            <tr>
+              <th>#</th>
+              <th>Facility</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Pax</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Rows populated dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- VIEW / EDIT BOOKING MODAL -->
+    <div class="modal fade" id="bookingModal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalTitle">Booking Details</h5>
+            <button class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <form id="bookingForm">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Fullname</label>
+                  <input
+                    type="text"
+                    id="fullname"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Email</label>
+                  <input
+                    type="email"
+                    id="email"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Mobile Number</label>
+                  <input
+                    type="text"
+                    id="mobile"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Facility</label>
+                  <select id="facility" class="form-select" required>
+                    <option value="">-- Select Facility --</option>
+                    <option value="Swimming Pool">Swimming Pool</option>
+                    <option value="Events Place">Events Place</option>
+                    <option value="Function Hall">Function Hall</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Date From</label>
+                  <input
+                    type="date"
+                    id="date_from"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Date To</label>
+                  <input
+                    type="date"
+                    id="date_to"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Time From</label>
+                  <input
+                    type="time"
+                    id="time_from"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Time To</label>
+                  <input
+                    type="time"
+                    id="time_to"
+                    class="form-control"
+                    required
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Number of Pax</label>
+                  <input
+                    type="number"
+                    id="pax"
+                    class="form-control"
+                    min="1"
+                    required
+                  />
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">
+              Cancel
+            </button>
+            <button class="btn btn-primary" id="saveBookingBtn">
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- LocalStorage Booking Script -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+        const tbody = document.querySelector("#bookingsTable tbody");
+        let editingIndex = null;
+
+        function renderTable() {
+          tbody.innerHTML = "";
+          bookings.forEach((b, index) => {
+            const row = `
+            <tr>
+              <td>${index + 1}</td>
+              <td>${b.facility}</td>
+              <td>${b.date_from} to ${b.date_to}</td>
+              <td>${b.time_from} - ${b.time_to}</td>
+              <td>${b.pax}</td>
+              <td><span class="badge ${
+                b.status === "Approved"
+                  ? "bg-success"
+                  : b.status === "Declined"
+                  ? "bg-danger"
+                  : "bg-warning"
+              }">${b.status}</span></td>
+              <td>
+                <button class="btn btn-sm btn-info" onclick="viewBooking(${index})">
+                  <i class="fas fa-eye"></i> View
+                </button>
+                <button class="btn btn-sm btn-warning" onclick="editBooking(${index})">
+                  <i class="fas fa-edit"></i> Edit
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="deleteBooking(${index})">
+                  <i class="fas fa-trash"></i> Delete
+                </button>
+              </td>
+            </tr>
+          `;
+            tbody.insertAdjacentHTML("beforeend", row);
+          });
+        }
+
+        window.viewBooking = function (index) {
+          editingIndex = null;
+          const b = bookings[index];
+          document.getElementById("modalTitle").innerText = "Booking Details";
+          const form = document.getElementById("bookingForm");
+          Array.from(form.elements).forEach((el) => (el.disabled = true));
+          fillForm(b);
+          new bootstrap.Modal(document.getElementById("bookingModal")).show();
+        };
+
+        window.editBooking = function (index) {
+          editingIndex = index;
+          const b = bookings[index];
+          document.getElementById("modalTitle").innerText = "Edit Booking";
+          const form = document.getElementById("bookingForm");
+          Array.from(form.elements).forEach((el) => (el.disabled = false));
+          fillForm(b);
+          new bootstrap.Modal(document.getElementById("bookingModal")).show();
+        };
+
+        function fillForm(b) {
+          document.getElementById("fullname").value = b.fullname;
+          document.getElementById("email").value = b.email;
+          document.getElementById("mobile").value = b.mobile;
+          document.getElementById("facility").value = b.facility;
+          document.getElementById("date_from").value = b.date_from;
+          document.getElementById("date_to").value = b.date_to;
+          document.getElementById("time_from").value = b.time_from;
+          document.getElementById("time_to").value = b.time_to;
+          document.getElementById("pax").value = b.pax;
+        }
+
+        document
+          .getElementById("saveBookingBtn")
+          .addEventListener("click", function () {
+            const updatedBooking = {
+              fullname: document.getElementById("fullname").value,
+              email: document.getElementById("email").value,
+              mobile: document.getElementById("mobile").value,
+              facility: document.getElementById("facility").value,
+              date_from: document.getElementById("date_from").value,
+              date_to: document.getElementById("date_to").value,
+              time_from: document.getElementById("time_from").value,
+              time_to: document.getElementById("time_to").value,
+              pax: document.getElementById("pax").value,
+              status: bookings[editingIndex].status, // Keep original status
+            };
+
+            if (editingIndex !== null) {
+              bookings[editingIndex] = updatedBooking;
+              editingIndex = null;
+            }
+
+            localStorage.setItem("bookings", JSON.stringify(bookings));
+            renderTable();
+            new bootstrap.Modal(document.getElementById("bookingModal")).hide();
+          });
+
+        window.deleteBooking = function (index) {
+          if (confirm("Are you sure you want to delete this booking?")) {
+            bookings.splice(index, 1);
+            localStorage.setItem("bookings", JSON.stringify(bookings));
+            renderTable();
+          }
+        };
+
+        // Search filter
+        document
+          .getElementById("searchBooking")
+          .addEventListener("input", function () {
+            const query = this.value.toLowerCase();
+            Array.from(tbody.rows).forEach((row) => {
+              row.style.display = row.innerText.toLowerCase().includes(query)
+                ? ""
+                : "none";
+            });
+          });
+
+        renderTable();
+      });
+    </script>
+  </body>
+</html>

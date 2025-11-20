@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Staff Payments</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <!-- FullCalendar CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Custom CSS -->
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        display: flex;
+        background: #f4f6f8;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 240px;
+        height: 100vh;
+        background: #198754;
+        color: #fff;
+        position: fixed;
+        top: 0;
+        left: 0;
+        padding: 20px 0;
+      }
+
+      .sidebar .logo h2 {
+        text-align: center;
+        font-size: 18px;
+        margin-bottom: 30px;
+      }
+
+      .sidebar .menu {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      .sidebar .menu li {
+        margin: 15px 0;
+      }
+
+      .sidebar .menu li a {
+        color: #fff;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 12px 20px;
+        border-radius: 5px;
+        transition: 0.3s;
+      }
+
+      .sidebar .menu li a:hover,
+      .sidebar .menu li a.active {
+        background: #145c32;
+      }
+
+      /* Main Content */
+      .main-content {
+        margin-left: 240px;
+        padding: 20px;
+        width: 100%;
+      }
+
+      .badge-status {
+        padding: 5px 10px;
+        border-radius: 5px;
+        color: #fff;
+      }
+
+      .bg-pending {
+        background-color: #ffc107;
+      }
+
+      .bg-approved {
+        background-color: #198754;
+      }
+
+      .bg-declined {
+        background-color: #dc3545;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="logo">
+        <h2>Staff Dashboard</h2>
+      </div>
+
+      <ul class="menu">
+        <li>
+          <a href="staff-calendar.html"
+            ><i class="fas fa-calendar"></i> <span>Calendar</span></a
+          >
+        </li>
+        <li>
+          <a href="staff-bookings.html"
+            ><i class="fas fa-calendar-check"></i> <span>Bookings</span></a
+          >
+        </li>
+        <li>
+          <a href="staff-payment.html" class="active"
+            ><i class="fas fa-coins"></i> <span>Payment</span></a
+          >
+        </li>
+        <li>
+          <a href="staff-facilities.html"
+            ><i class="fas fa-building"></i> <span>Facilities</span></a
+          >
+        </li>
+        <li>
+          <a href="#" onclick="confirmLogout(event)">
+            <i class="fas fa-power-off"></i> <span>Logout</span>
+          </a>
+        </li>
+
+        <script>
+          function confirmLogout(event) {
+            event.preventDefault(); // Prevent the default link action
+            if (confirm("Are you sure you want to logout?")) {
+              // User confirmed, redirect to logout page
+              window.location.href = "index.html"; // Replace with your actual logout URL
+            }
+          }
+        </script>
+      </ul>
+    </div>
+    <div class="main-content">
+      <h2 class="mb-4">All Payments</h2>
+
+      <!-- Search -->
+      <div class="input-group mb-3" style="max-width: 350px">
+        <input
+          type="text"
+          id="searchPayment"
+          class="form-control"
+          placeholder="Search payments..."
+        />
+        <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+      </div>
+
+      <div class="table-responsive">
+        <table
+          class="table table-striped align-middle text-center"
+          id="paymentsTable"
+        >
+          <thead class="table-dark">
+            <tr>
+              <th>#</th>
+              <th>Facility</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Pax</th>
+              <th>Total Payment (PHP)</th>
+              <th>Payment Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Payment Details Modal -->
+    <div class="modal fade" id="paymentDetailsModal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Payment Details</h5>
+            <button class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const tbody = document.querySelector("#paymentsTable tbody");
+        const bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+        const prices = {
+          "Swimming Pool": 500,
+          "Events Place": 1000,
+          "Function Hall": 1500,
+        };
+
+        function renderStaffPayments() {
+          tbody.innerHTML = "";
+          bookings.forEach((b, index) => {
+            const total = (prices[b.facility] || 0) * b.pax;
+            const paymentStatus = b.paymentStatus || "Unpaid";
+
+            tbody.insertAdjacentHTML(
+              "beforeend",
+              `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${b.facility}</td>
+            <td>${b.date_from} to ${b.date_to}</td>
+            <td>${b.time_from} - ${b.time_to}</td>
+            <td>${b.pax}</td>
+            <td>${total.toFixed(2)}</td>
+            <td><span class="badge ${
+              paymentStatus === "Paid" ? "bg-success" : "bg-warning"
+            }">${paymentStatus}</span></td>
+            <td>
+              <button class="btn btn-sm btn-info" onclick="openPaymentModal(${index})">
+                <i class="fas fa-eye"></i> View
+              </button>
+            </td>
+          </tr>
+        `
+            );
+          });
+        }
+
+        window.openPaymentModal = function (index) {
+          const b = bookings[index];
+          const total = (prices[b.facility] || 0) * b.pax;
+          const modal = new bootstrap.Modal(
+            document.getElementById("paymentDetailsModal")
+          );
+          modal.show();
+
+          document.querySelector(
+            "#paymentDetailsModal .modal-body"
+          ).innerHTML = `
+        <p><strong>Facility:</strong> ${b.facility}</p>
+        <p><strong>Fullname:</strong> ${b.fullname}</p>
+        <p><strong>Email:</strong> ${b.email}</p>
+        <p><strong>Mobile:</strong> ${b.mobile}</p>
+        <p><strong>Date:</strong> ${b.date_from} to ${b.date_to}</p>
+        <p><strong>Time:</strong> ${b.time_from} - ${b.time_to}</p>
+        <p><strong>Pax:</strong> ${b.pax}</p>
+        <p><strong>Total Payment:</strong> ${total.toFixed(2)} PHP</p>
+        <p><strong>Payment Status:</strong> ${b.paymentStatus || "Unpaid"}</p>
+      `;
+        };
+
+        document
+          .getElementById("searchPayment")
+          .addEventListener("input", function () {
+            const query = this.value.toLowerCase();
+            Array.from(tbody.rows).forEach((row) => {
+              row.style.display = row.innerText.toLowerCase().includes(query)
+                ? ""
+                : "none";
+            });
+          });
+
+        renderStaffPayments();
+      });
+    </script>
+  </body>
+</html>
