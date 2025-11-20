@@ -16,6 +16,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
+
     <!-- Custom CSS -->
     <style>
       * {
@@ -73,34 +74,15 @@
         background: #145c32;
       }
 
-      /* Main Content */
       .main-content {
         margin-left: 240px;
         padding: 20px;
         width: 100%;
       }
-
-      .badge-status {
-        padding: 5px 10px;
-        border-radius: 5px;
-        color: #fff;
-      }
-
-      .bg-pending {
-        background-color: #ffc107;
-      }
-
-      .bg-approved {
-        background-color: #198754;
-      }
-
-      .bg-declined {
-        background-color: #dc3545;
-      }
     </style>
   </head>
 
-  <body style="display: flex">
+  <body>
     <!-- Sidebar -->
     <div class="sidebar">
       <div class="logo">
@@ -109,7 +91,7 @@
       <ul class="menu">
         <li>
           <a href="staff-dashboard.html"
-            ><i class="fas fa-chart-line"></i><span>Dashboard</span></a
+            ><i class="fas fa-chart-line"></i> <span>Dashboard</span></a
           >
         </li>
         <li>
@@ -137,21 +119,11 @@
             <i class="fas fa-power-off"></i> <span>Logout</span>
           </a>
         </li>
-
-        <script>
-          function confirmLogout(event) {
-            event.preventDefault(); // Prevent the default link action
-            if (confirm("Are you sure you want to logout?")) {
-              // User confirmed, redirect to logout page
-              window.location.href = "index.html"; // Replace with your actual logout URL
-            }
-          }
-        </script>
       </ul>
     </div>
 
     <!-- Main Content -->
-    <div class="main-content p-4" style="width: 100%; margin-left: 240px">
+    <div class="main-content">
       <h2 class="mb-4">Bookings List</h2>
 
       <!-- Search Bar -->
@@ -175,6 +147,7 @@
             <tr>
               <th>#</th>
               <th>Facility</th>
+              <th>Name</th>
               <th>Date</th>
               <th>Time</th>
               <th>Pax</th>
@@ -182,9 +155,7 @@
               <th>Action</th>
             </tr>
           </thead>
-          <tbody>
-            <!-- Rows populated by JS -->
-          </tbody>
+          <tbody></tbody>
         </table>
       </div>
     </div>
@@ -197,14 +168,7 @@
             <h5 class="modal-title">Booking Details</h5>
             <button class="btn-close" data-bs-dismiss="modal"></button>
           </div>
-          <div class="modal-body">
-            <!-- Content populated dynamically -->
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" data-bs-dismiss="modal">
-              Close
-            </button>
-          </div>
+          <div class="modal-body"></div>
         </div>
       </div>
     </div>
@@ -213,81 +177,103 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
+      // LOGOUT CONFIRMATION
+      function confirmLogout(event) {
+        event.preventDefault();
+        if (confirm("Are you sure you want to logout?")) {
+          window.location.href = "index.html";
+        }
+      }
+
+      // LOAD BOOKINGS
+      document.addEventListener("DOMContentLoaded", () => {
         let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
         const tbody = document.querySelector("#bookingsTable tbody");
 
         function renderTable() {
           tbody.innerHTML = "";
           bookings.forEach((b, index) => {
-            const row = `<tr>
-              <td>${index + 1}</td>
-              <td>${b.facility}</td>
-              <td>${b.date_from} to ${b.date_to}</td>
-              <td>${b.time_from} - ${b.time_to}</td>
-              <td>${b.pax}</td>
-              <td><span class="badge ${
-                b.status === "Approved"
-                  ? "bg-success"
-                  : b.status === "Declined"
-                  ? "bg-danger"
-                  : "bg-warning"
-              }">${b.status}</span></td>
-              <td>
-                <button class="btn btn-sm btn-info" onclick="openDetailsModal(${index})">
-                  <i class="fas fa-eye"></i> View
-                </button>
-                <button class="btn btn-sm btn-danger" onclick="deleteBooking(${index})">
-                  <i class="fas fa-trash"></i> Delete
-                </button>
-              </td>
-            </tr>`;
-            tbody.insertAdjacentHTML("beforeend", row);
+            tbody.innerHTML += `
+              <tr>
+                <td>${index + 1}</td>
+                <td>${b.facility}</td>
+                <td>${b.fullname}</td>
+                <td>${b.date_from} to ${b.date_to}</td>
+                <td>${b.time_from} - ${b.time_to}</td>
+                <td>${b.pax}</td>
+                <td>
+                  <span class="badge ${
+                    b.status === "Approved"
+                      ? "bg-success"
+                      : b.status === "Declined"
+                      ? "bg-danger"
+                      : "bg-warning"
+                  }">${b.status}</span>
+                </td>
+                <td>
+                  <button class="btn btn-sm btn-info" onclick="viewBooking(${index})">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button class="btn btn-sm btn-success" onclick="approveBooking(${index})">
+                    <i class="fas fa-check"></i>
+                  </button>
+                  <button class="btn btn-sm btn-danger" onclick="declineBooking(${index})">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </td>
+              </tr>
+            `;
           });
         }
 
         renderTable();
 
-        // Open details modal
-        window.openDetailsModal = function (index) {
+        // VIEW
+        window.viewBooking = function (index) {
           const b = bookings[index];
           const modal = new bootstrap.Modal(
             document.getElementById("bookingDetailsModal")
           );
-          modal.show();
-
           document.querySelector(
             "#bookingDetailsModal .modal-body"
           ).innerHTML = `
-            <p><strong>Facility:</strong> ${b.facility}</p>
-            <p><strong>Fullname:</strong> ${b.fullname}</p>
+            <p><strong>Full Name:</strong> ${b.fullname}</p>
             <p><strong>Email:</strong> ${b.email}</p>
             <p><strong>Mobile:</strong> ${b.mobile}</p>
+            <p><strong>Facility:</strong> ${b.facility}</p>
             <p><strong>Date:</strong> ${b.date_from} to ${b.date_to}</p>
             <p><strong>Time:</strong> ${b.time_from} - ${b.time_to}</p>
             <p><strong>Pax:</strong> ${b.pax}</p>
             <p><strong>Status:</strong> ${b.status}</p>
           `;
+          modal.show();
         };
 
-        // Delete booking
-        window.deleteBooking = function (index) {
-          if (confirm("Are you sure you want to delete this booking?")) {
-            bookings.splice(index, 1);
-            localStorage.setItem("bookings", JSON.stringify(bookings));
-            renderTable();
-          }
+        // APPROVE BOOKING
+        window.approveBooking = function (index) {
+          bookings[index].status = "Approved";
+          localStorage.setItem("bookings", JSON.stringify(bookings));
+          renderTable();
         };
 
-        // Search filter
-        const searchInput = document.getElementById("searchBooking");
-        searchInput.addEventListener("input", function () {
-          const query = this.value.toLowerCase();
-          Array.from(tbody.rows).forEach((row) => {
-            const text = row.innerText.toLowerCase();
-            row.style.display = text.includes(query) ? "" : "none";
+        // DECLINE BOOKING
+        window.declineBooking = function (index) {
+          bookings[index].status = "Declined";
+          localStorage.setItem("bookings", JSON.stringify(bookings));
+          renderTable();
+        };
+
+        // SEARCH FUNCTION
+        document
+          .getElementById("searchBooking")
+          .addEventListener("input", function () {
+            const query = this.value.toLowerCase();
+            Array.from(tbody.rows).forEach((row) => {
+              row.style.display = row.innerText.toLowerCase().includes(query)
+                ? ""
+                : "none";
+            });
           });
-        });
       });
     </script>
   </body>
