@@ -3,83 +3,206 @@
 * {
   margin: 0;
   padding: 0;
+  /* Ensure padding and border are included in the element's total width/height */
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
 }
 
+/* --- Global Container Enhancements (Consistent Styling) --- */
 .clientRegisterPage .container {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh; /* Use min-height to allow content to push the container if needed */
+  padding: 20px 10px; /* Add vertical padding for very short viewports */
   background-image: url(../assets/bg.jpg);
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  opacity: 100;
   max-width: 100%;
 }
 
+/* --- Registration Form Styling: Enhanced Green Theme --- */
 .clientRegisterForm {
-  border: 1px solid #2aa63e;
-  border-radius: 10px;
-  box-shadow: 0 5px 10px 0 #b9f8cf;
-  padding: 20px;
-  background-color: #fff;
+  border: 2px solid #2aa63e;
+  border-radius: 12px;
+  /* Use a more robust, consistent shadow for prominence */
+  box-shadow: 0 10px 30px 5px rgba(42, 166, 62, 0.4),
+    0 0 15px rgba(185, 248, 207, 0.8);
+  padding: 30px;
+  background-color: #ffffff;
+  width: 90%; /* Responsive width */
+  max-width: 550px;
+  transition: transform 0.3s ease;
 }
 
+.clientRegisterForm:hover {
+  transform: translateY(-3px);
+}
+
+/* --- Headings --- */
 .clientRegisterForm h3,
-h6 {
+.clientRegisterForm h6 {
   text-align: center;
+  margin-bottom: 5px;
+}
+
+.clientRegisterForm h3 {
+  color: #0b6623;
+  font-size: 26px;
+  margin-bottom: 15px;
 }
 
 .clientRegisterForm h6 {
-  font-size: 14px;
+  font-size: 16px;
   color: #2aa63e;
+  font-weight: 600;
 }
 
+/* --- Separator Line --- */
 .line {
-  border: 1px solid #b9f8cf;
+  border: 0;
+  height: 1px;
+  background-color: #b9f8cf;
+  margin: 20px 0;
 }
 
+/* --- Input Fields & Layout --- */
 .clientRegisterForm input {
-  padding: 10px;
-  border: 1px solid #2aa63e;
   width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #70c482;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-sizing: border-box; /* **Crucial:** ensures padding/border don't cause overflow */
+}
+
+.clientRegisterForm input:focus {
+  border-color: #2aa63e;
+  box-shadow: 0 0 0 3px rgba(42, 166, 62, 0.2);
+  outline: none;
 }
 
 .clientRegisterForm input::placeholder {
-  color: #999;
+  color: #aaa;
+  font-style: italic;
+}
+
+/* --- Password Fields Layout (Side-by-Side) --- */
+.passwordGroup {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
 }
 
 .passwordInput,
 .confirmPasswordInput {
-  display: inline-block;
+  flex: 1;
+  /* **Crucial Fix:** Allows the flex item to shrink below content size to prevent overflow */
+  min-width: 0;
 }
 
+/* --- Buttons Container --- */
 .buttons {
   display: flex;
   justify-content: flex-end;
-}
-
-.clientRegisterBtn,
-.cancelBtn {
-  display: inline-block;
+  gap: 10px;
+  margin-top: 25px;
 }
 
 .clientRegisterBtn button,
 .cancelBtn button {
-  padding: 10px;
-  width: 100px;
-  margin-left: 10px;
+  padding: 12px 20px;
+  min-width: 120px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
 }
 
+/* Register Button (Primary CTA) */
+.clientRegisterBtn button {
+  background-color: #2aa63e;
+  color: #fff;
+  order: 2;
+}
+
+.clientRegisterBtn button:hover {
+  background-color: #0b6623;
+  transform: translateY(-1px);
+}
+
+/* Cancel Button (Secondary Action) */
+.cancelBtn button {
+  background-color: #f0f0f0;
+  color: #444;
+  border: 1px solid #ccc;
+  order: 1;
+}
+
+.cancelBtn button:hover {
+  background-color: #e0e0e0;
+  transform: translateY(-1px);
+}
+
+/* --- Login Link --- */
 .clientLoginLink {
   text-align: center;
+  margin-top: 20px;
+  font-size: 15px;
 }
 
 .clientLoginLink a {
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
+  color: #2aa63e;
+  transition: color 0.3s;
+}
+
+.clientLoginLink a:hover {
+  color: #0b6623;
+  text-decoration: underline;
+}
+
+/* --- RESPONSIVENESS FIXES (MEDIA QUERIES) --- */
+
+@media (max-width: 500px) {
+  /* Adjust form padding on small screens */
+  .clientRegisterForm {
+    padding: 20px;
+  }
+
+  /* Stack the password fields vertically to prevent overflow */
+  .passwordGroup {
+    flex-direction: column;
+    gap: 0; /* Remove horizontal gap when stacking */
+  }
+
+  /* Add back vertical spacing between the stacked fields */
+  .passwordInput,
+  .confirmPasswordInput {
+    margin-bottom: 15px;
+  }
+
+  /* Remove redundant margin from the last stacked field */
+  .confirmPasswordInput {
+    margin-bottom: 0;
+  }
+
+  /* Center the buttons on mobile */
+  .buttons {
+    justify-content: center;
+  }
+
+  /* Make buttons full width on small screens for better tapping */
+  .clientRegisterBtn button,
+  .cancelBtn button {
+    min-width: unset; /* Remove fixed min-width */
+    width: 48%; /* Adjust to sit side-by-side with a gap */
+  }
 }

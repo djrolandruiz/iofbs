@@ -7,6 +7,7 @@
   font-family: "Poppins", sans-serif;
 }
 
+/* --- Global Container Enhancements --- */
 .adminLoginPage .container {
   display: flex;
   flex-direction: column;
@@ -17,65 +18,131 @@
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  opacity: 100;
+  /* Removed redundant opacity: 100 */
   max-width: 100%;
 }
 
+/* --- Login Form Styling: More Prominent and Green-Focused --- */
 .adminLoginForm {
-  border: 1px solid #2aa63e;
-  border-radius: 10px;
-  box-shadow: 0 5px 10px 0 #b9f8cf;
-  padding: 20px;
-  background-color: #fff;
+  /* Enhanced Border: Thicker, more prominent green */
+  border: 2px solid #2aa63e; /* Original Green */
+  border-radius: 12px; /* Slightly rounder */
+  /* Updated Box Shadow: Deeper shadow with a distinct light-green glow */
+  box-shadow: 0 8px 25px 5px rgba(42, 166, 62, 0.4),
+    0 0 15px rgba(185, 248, 207, 0.8);
+  padding: 30px; /* Increased padding for more space */
+  background-color: #ffffff; /* Keep background white for contrast */
+  width: 90%; /* Make it responsive */
+  max-width: 400px; /* Max width for desktop */
+  transition: transform 0.3s ease; /* Subtle animation for hover/focus effects */
 }
 
+/* Optional: Add a slight lift on hover for visual appeal */
+.adminLoginForm:hover {
+  transform: translateY(-5px);
+}
+
+/* --- Headings --- */
 .adminLoginForm h3,
-h6 {
+.adminLoginForm h6 {
+  /* Target h6 explicitly for better specificity */
   text-align: center;
+  margin-bottom: 5px; /* Adjust spacing */
+}
+
+.adminLoginForm h3 {
+  color: #0b6623; /* Darker green for the main title */
+  font-size: 24px;
+  margin-bottom: 15px;
 }
 
 .adminLoginForm h6 {
-  font-size: 14px;
-  color: #2aa63e;
+  font-size: 16px; /* Slightly larger for better readability */
+  color: #2aa63e; /* Original Green */
+  font-weight: 600; /* Bolder for emphasis */
 }
 
+/* --- Separator Line --- */
 .line {
-  border: 1px solid #b9f8cf;
+  border: 0; /* Remove default border */
+  height: 1px;
+  background-color: #b9f8cf; /* Light Green */
+  margin: 20px 0; /* More vertical space */
 }
 
+/* --- Input Fields --- */
 .adminLoginForm input {
-  padding: 10px;
-  border: 1px solid #2aa63e;
+  width: 100%; /* Full width for better form flow */
+  padding: 12px; /* Increased padding */
+  margin-bottom: 15px; /* Spacing between fields */
+  border: 1px solid #70c482; /* Lighter green border for subtle look */
+  border-radius: 8px; /* Rounded input fields */
+  font-size: 16px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Focus state: Highlight with the main green */
+.adminLoginForm input:focus {
+  border-color: #2aa63e; /* Main Green */
+  box-shadow: 0 0 0 3px rgba(42, 166, 62, 0.2); /* Soft green glow on focus */
+  outline: none; /* Remove default outline */
 }
 
 .adminLoginForm input::placeholder {
-  color: #999;
+  color: #aaa; /* Slightly lighter placeholder */
+  font-style: italic;
 }
 
+/* --- Login Button --- */
 .adminLoginBtn {
   display: flex;
   justify-content: center;
+  margin-top: 25px; /* Space above button */
+  margin-bottom: 20px; /* Space below button */
 }
 
 .adminLoginBtn button {
-  padding: 10px;
-  width: 100px;
+  padding: 12px 25px; /* Better padding */
+  width: 100%; /* Full width within the button container */
+  max-width: 200px; /* Max width for desktop */
+  border: none;
+  border-radius: 8px;
+  background-color: #2aa63e; /* Primary Green */
+  color: #fff; /* White text for high contrast */
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+  letter-spacing: 0.5px;
 }
 
-.clientLoginLink {
-  text-align: center;
+.adminLoginBtn button:hover {
+  background-color: #0b6623; /* Darker green on hover */
+  transform: translateY(-2px); /* Slight lift */
 }
 
-.clientLoginLink a {
-  text-decoration: none;
-  font-weight: 500;
+.adminLoginBtn button:active {
+  transform: translateY(0); /* Press effect */
 }
 
+/* --- Links Styling (Client Login & Forgot Password) --- */
+.clientLoginLink,
 .forgotPasswordLink {
   text-align: center;
+  margin-top: 10px; /* Spacing */
+  font-size: 15px;
 }
 
+.clientLoginLink a,
 .forgotPasswordLink a {
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
+  color: #2aa63e; /* Primary Green */
+  transition: color 0.3s;
+}
+
+.clientLoginLink a:hover,
+.forgotPasswordLink a:hover {
+  color: #0b6623; /* Darker green on hover */
+  text-decoration: underline;
 }
