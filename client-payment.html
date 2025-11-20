@@ -4,7 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Client Payment</title>
-    <!-- Bootstrap CSS -->
+
+    <!-- Bootstrap -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -15,7 +16,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
-    <!-- Custom CSS -->
+
     <style>
       * {
         margin: 0;
@@ -23,7 +24,6 @@
         box-sizing: border-box;
         font-family: "Poppins", sans-serif;
       }
-
       body {
         display: flex;
         background: #f4f6f8;
@@ -40,22 +40,18 @@
         left: 0;
         padding: 20px 0;
       }
-
       .sidebar .logo h2 {
         text-align: center;
         font-size: 18px;
         margin-bottom: 30px;
       }
-
       .sidebar .menu {
         list-style: none;
         padding-left: 0;
       }
-
       .sidebar .menu li {
         margin: 15px 0;
       }
-
       .sidebar .menu li a {
         color: #fff;
         text-decoration: none;
@@ -66,29 +62,21 @@
         border-radius: 5px;
         transition: 0.3s;
       }
-
       .sidebar .menu li a:hover,
       .sidebar .menu li a.active {
         background: #145c32;
       }
 
-      /* Main Content */
+      /* Content */
       .main-content {
+        width: calc(100% - 240px);
         margin-left: 240px;
-        padding: 20px;
-        width: 100%;
-      }
-
-      /* Calendar */
-      #calendar {
-        background: #fff;
-        padding: 15px;
-        border-radius: 10px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        padding: 25px;
       }
     </style>
   </head>
-  <body style="display: flex">
+
+  <body>
     <!-- Sidebar -->
     <div class="sidebar">
       <div class="logo">
@@ -98,56 +86,55 @@
       <ul class="menu">
         <li>
           <a href="client-calendar.html"
-            ><i class="fas fa-calendar"></i><span>Calendar</span></a
+            ><i class="fas fa-calendar"></i>Calendar</a
           >
         </li>
         <li>
           <a href="client-bookings.html"
-            ><i class="fas fa-calendar-check"></i><span>Bookings</span></a
+            ><i class="fas fa-calendar-check"></i>Bookings</a
           >
         </li>
         <li>
           <a href="client-payment.html" class="active"
-            ><i class="fas fa-coins"></i><span>Payment</span></a
+            ><i class="fas fa-coins"></i>Payment</a
           >
         </li>
         <li>
-          <a href="#" onclick="confirmLogout(event)">
-            <i class="fas fa-power-off"></i> <span>Logout</span>
-          </a>
+          <a href="#" onclick="confirmLogout(event)"
+            ><i class="fas fa-power-off"></i>Logout</a
+          >
         </li>
-
-        <script>
-          function confirmLogout(event) {
-            event.preventDefault(); // Prevent the default link action
-            if (confirm("Are you sure you want to logout?")) {
-              // User confirmed, redirect to logout page
-              window.location.href = "index.html"; // Replace with your actual logout URL
-            }
-          }
-        </script>
       </ul>
     </div>
 
-    <!-- MAIN CONTENT -->
-    <div class="main-content p-4" style="width: 100%; margin-left: 240px">
+    <script>
+      function confirmLogout(event) {
+        event.preventDefault();
+        if (confirm("Are you sure you want to logout?")) {
+          window.location.href = "index.html";
+        }
+      }
+    </script>
+
+    <!-- Main Content -->
+    <div class="main-content">
       <h2 class="mb-4">My Payments</h2>
 
-      <!-- SEARCH BAR -->
+      <!-- Search -->
       <div class="input-group mb-3" style="max-width: 350px">
         <input
           type="text"
-          class="form-control"
           id="searchPayment"
-          placeholder="Search payments..."
+          class="form-control"
+          placeholder="Search..."
         />
         <button class="btn btn-primary"><i class="fas fa-search"></i></button>
       </div>
 
-      <!-- PAYMENTS TABLE -->
+      <!-- Table -->
       <div class="table-responsive">
         <table
-          class="table table-striped align-middle text-center"
+          class="table table-striped text-center align-middle"
           id="paymentsTable"
         >
           <thead class="table-dark">
@@ -157,19 +144,18 @@
               <th>Date</th>
               <th>Time</th>
               <th>Pax</th>
-              <th>Total Payment (PHP)</th>
-              <th>Status</th>
+              <th>Total (PHP)</th>
+              <th>Booking Status</th>
+              <th>Payment Status</th>
               <th>Action</th>
             </tr>
           </thead>
-          <tbody>
-            <!-- Rows populated dynamically -->
-          </tbody>
+          <tbody></tbody>
         </table>
       </div>
     </div>
 
-    <!-- VIEW PAYMENT DETAILS MODAL -->
+    <!-- Payment Modal -->
     <div class="modal fade" id="paymentDetailsModal" tabindex="-1">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -178,9 +164,7 @@
             <button class="btn-close" data-bs-dismiss="modal"></button>
           </div>
 
-          <div class="modal-body">
-            <!-- Populated dynamically -->
-          </div>
+          <div class="modal-body"></div>
 
           <div class="modal-footer">
             <button class="btn btn-secondary" data-bs-dismiss="modal">
@@ -191,121 +175,139 @@
       </div>
     </div>
 
-    <!-- Bootstrap JS -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- LocalStorage Payment Script -->
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        const paymentsTableBody = document.querySelector(
-          "#paymentsTable tbody"
-        );
         const bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+        const tableBody = document.querySelector("#paymentsTable tbody");
 
-        // Facility Prices
         const prices = {
           "Swimming Pool": 500,
           "Events Place": 1000,
           "Function Hall": 1500,
         };
 
+        // Render Payment Table
         function renderPayments() {
-          paymentsTableBody.innerHTML = "";
+          tableBody.innerHTML = "";
 
           bookings.forEach((b, index) => {
-            const total = (prices[b.facility] || 0) * b.pax;
-            const status =
-              b.status === "Approved" ? b.paymentStatus || "Unpaid" : "Pending";
+            const total = (prices[b.facility] || 0) * Number(b.pax);
+            const paymentStatus = b.paymentStatus || "Unpaid";
 
-            const row = `
-            <tr>
-              <td>${index + 1}</td>
-              <td>${b.facility}</td>
-              <td>${b.date_from} to ${b.date_to}</td>
-              <td>${b.time_from} - ${b.time_to}</td>
-              <td>${b.pax}</td>
-              <td>${total.toFixed(2)}</td>
-              <td><span class="badge ${
-                status === "Paid"
-                  ? "bg-success"
-                  : status === "Unpaid"
-                  ? "bg-warning"
-                  : "bg-secondary"
-              }">${status}</span></td>
-              <td>
-                <button class="btn btn-sm btn-info" onclick="openPaymentModal(${index})">
-                  <i class="fas fa-eye"></i> View
-                </button>
-              </td>
-            </tr>
-          `;
-            paymentsTableBody.insertAdjacentHTML("beforeend", row);
+            tableBody.innerHTML += `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${b.facility}</td>
+          <td>${b.date_from} to ${b.date_to}</td>
+          <td>${b.time_from} - ${b.time_to}</td>
+          <td>${b.pax}</td>
+          <td>${total.toFixed(2)}</td>
+
+          <td>
+            <span class="badge ${
+              b.status === "Approved" ? "bg-success" : "bg-secondary"
+            }">
+              ${b.status}
+            </span>
+          </td>
+
+          <td>
+            <span class="badge ${
+              paymentStatus === "Paid" ? "bg-success" : "bg-warning"
+            }">${paymentStatus}</span>
+          </td>
+
+          <td>
+            <button class="btn btn-sm btn-info" onclick="openPaymentModal(${index})">
+              <i class="fas fa-eye"></i> View
+            </button>
+          </td>
+        </tr>
+      `;
           });
         }
 
+        // Open Payment Modal
         window.openPaymentModal = function (index) {
           const b = bookings[index];
-          const total = (prices[b.facility] || 0) * b.pax;
           const modal = new bootstrap.Modal(
             document.getElementById("paymentDetailsModal")
           );
           modal.show();
 
-          const modalBody = document.querySelector(
-            "#paymentDetailsModal .modal-body"
-          );
-          modalBody.innerHTML = `
-          <p><strong>Facility:</strong> ${b.facility}</p>
-          <p><strong>Fullname:</strong> ${b.fullname}</p>
-          <p><strong>Email:</strong> ${b.email}</p>
-          <p><strong>Mobile:</strong> ${b.mobile}</p>
-          <p><strong>Date:</strong> ${b.date_from} to ${b.date_to}</p>
-          <p><strong>Time:</strong> ${b.time_from} - ${b.time_to}</p>
-          <p><strong>Pax:</strong> ${b.pax}</p>
-          <p><strong>Total Payment:</strong> ${total.toFixed(2)} PHP</p>
-          <p><strong>Status:</strong> ${
-            b.status === "Approved" ? b.paymentStatus || "Unpaid" : "Pending"
-          }</p>
+          const total = (prices[b.facility] || 0) * Number(b.pax);
 
-          <!-- Upload proof -->
-          <div class="mb-3 mt-3">
-            <label class="form-label">Upload Proof of Payment</label>
-            <input type="file" class="form-control" id="paymentFile" />
-            <small class="form-text text-muted">Accepted formats: JPG, PNG, PDF</small>
-            <button class="btn btn-success btn-sm mt-2" onclick="submitPayment(${index})">
-              Submit Payment
-            </button>
-          </div>
-        `;
+          document.querySelector(
+            "#paymentDetailsModal .modal-body"
+          ).innerHTML = `
+      <p><strong>Facility:</strong> ${b.facility}</p>
+      <p><strong>Pax:</strong> ${b.pax}</p>
+      <p><strong>Date:</strong> ${b.date_from} to ${b.date_to}</p>
+      <p><strong>Time:</strong> ${b.time_from} - ${b.time_to}</p>
+      <p><strong>Total Amount:</strong> ${total.toFixed(2)} PHP</p>
+      <p><strong>Booking Status:</strong> ${b.status}</p>
+      <p><strong>Payment Status:</strong> ${b.paymentStatus || "Unpaid"}</p>
+      <hr>
+
+      <label class="form-label">Upload Proof of Payment</label>
+      <input type="file" id="paymentFile" class="form-control" />
+      <button class="btn btn-success btn-sm mt-2" onclick="submitPayment(${index})">
+        Submit Payment
+      </button>
+
+      <hr>
+      ${
+        b.paymentProof
+          ? `<p class="text-success"><strong>Uploaded Proof:</strong></p>
+             <img src="${b.paymentProof}" class="img-fluid rounded border" />`
+          : `<p class="text-danger mt-2">No proof uploaded yet.</p>`
+      }
+    `;
         };
 
+        // Submit Payment
         window.submitPayment = function (index) {
           const fileInput = document.getElementById("paymentFile");
-          if (fileInput.files.length === 0) {
-            alert("Please select a file to submit.");
+
+          if (!fileInput.files.length) {
+            alert("Please attach proof of payment.");
             return;
           }
 
-          // Set payment status
-          bookings[index].paymentStatus = "Paid";
-          localStorage.setItem("bookings", JSON.stringify(bookings));
-          renderPayments();
-          alert("Payment submitted successfully!");
-          const modal = bootstrap.Modal.getInstance(
-            document.getElementById("paymentDetailsModal")
-          );
-          modal.hide();
+          const file = fileInput.files[0];
+          const reader = new FileReader();
+
+          reader.onload = function () {
+            bookings[index].paymentStatus = "Paid";
+            bookings[index].paymentProof = reader.result;
+
+            localStorage.setItem("bookings", JSON.stringify(bookings));
+
+            alert("Payment submitted successfully!");
+
+            renderPayments();
+            bootstrap.Modal.getInstance(
+              document.getElementById("paymentDetailsModal")
+            ).hide();
+          };
+
+          reader.readAsDataURL(file);
         };
 
-        // Search filter
-        const searchInput = document.getElementById("searchPayment");
-        searchInput.addEventListener("input", function () {
-          const query = this.value.toLowerCase();
-          Array.from(paymentsTableBody.rows).forEach((row) => {
-            const text = row.innerText.toLowerCase();
-            row.style.display = text.includes(query) ? "" : "none";
+        // Search Filter
+        document
+          .getElementById("searchPayment")
+          .addEventListener("input", function () {
+            const query = this.value.toLowerCase();
+            Array.from(tableBody.rows).forEach((row) => {
+              row.style.display = row.innerText.toLowerCase().includes(query)
+                ? ""
+                : "none";
+            });
           });
-        });
 
         renderPayments();
       });
