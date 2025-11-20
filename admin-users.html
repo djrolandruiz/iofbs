@@ -284,10 +284,14 @@
         window.editUser = function (index) {
           const u = users[index];
           document.getElementById("userModalTitle").innerText = "Edit User";
-          document.userForm.username.value = u.username;
-          document.userForm.password.value = u.password;
-          document.userForm.fullname.value = u.fullname;
-          document.userForm.role.value = u.role;
+          document.querySelector("#userForm [name='username']").value =
+            u.username;
+          document.querySelector("#userForm [name='password']").value =
+            u.password;
+          document.querySelector("#userForm [name='fullname']").value =
+            u.fullname;
+          document.querySelector("#userForm [name='role']").value = u.role;
+
           document.getElementById("userIndex").value = index;
           const modal = new bootstrap.Modal(
             document.getElementById("userModal")
